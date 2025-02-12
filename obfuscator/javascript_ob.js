@@ -1,220 +1,100 @@
-// const fs = require('fs');
-// const crypto = require('crypto');
+const fs = require("fs");
+const crypto = require("crypto");
+const zlib = require("zlib");
 
-// /**
-//  * Generate a random alphanumeric name.
-//  * @param {number} length Length of the name.
-//  * @returns {string} Random name.
-//  */
-// function randomName(length = 8) {
-//     return crypto.randomBytes(length).toString('hex').slice(0, length);
-// }
+// XOR Encryption Function
+function xorEncrypt(data, key) {
+    let keyBuffer = Buffer.from(key);
+    let dataBuffer = Buffer.from(data);
+    let encrypted = Buffer.alloc(dataBuffer.length);
 
-// /**
-//  * Rename variables in JavaScript code.
-//  * @param {string} code JavaScript code.
-//  * @returns {string} Obfuscated code.
-//  */
-// function renameVariables(code) {
-//     const variableNames = [...code.matchAll(/\b(?:var|let|const)\s+(\w+)/g)].map(match => match[1]);
-//     const mapping = {};
-
-//     variableNames.forEach(varName => {
-//         if (!mapping[varName]) {
-//             mapping[varName] = randomName();
-//         }
-//     });
-
-//     Object.entries(mapping).forEach(([oldName, newName]) => {
-//         const regex = new RegExp(`\\b${oldName}\\b`, 'g');
-//         code = code.replace(regex, newName);
-//     });
-
-//     return code;
-// }
-
-// /**
-//  * Encode string literals as hexadecimal.
-//  * @param {string} code JavaScript code.
-//  * @returns {string} Obfuscated code.
-//  */
-// function encodeStrings(code) {
-//     return code.replace(/(["'`])([^"'`]+?)\1/g, (match, quote, str) => {
-//         const encoded = Buffer.from(str, 'utf8').toString('hex');
-//         return `${quote}${encoded}${quote}`;
-//     });
-// }
-
-// /**
-//  * Flatten JavaScript code by removing line breaks and extra spaces.
-//  * @param {string} code JavaScript code.
-//  * @returns {string} Flattened code.
-//  */
-// function flattenCode(code) {
-//     return code.split(/\r?\n/).map(line => line.trim()).filter(Boolean).join('; ') + ';';
-// }
-
-// /**
-//  * Main obfuscation function.
-//  * @param {string} code JavaScript code.
-//  * @param {Object} options Obfuscation options.
-//  * @returns {string} Obfuscated code.
-//  */
-// function obfuscateCode(code, options = { rename: true, encode: true, flatten: true }) {
-//     if (options.rename) {
-//         code = renameVariables(code);
-//     }
-//     if (options.encode) {
-//         code = encodeStrings(code);
-//     }
-//     if (options.flatten) {
-//         code = flattenCode(code);
-//     }
-//     return code;
-// }
-
-// // Usage
-// const inputFilePath = process.argv[2];
-// const outputFilePath = process.argv[3];
-
-// if (!inputFilePath || !outputFilePath) {
-//     console.error('Usage: node obfuscator.js <input-file> <output-file>');
-//     process.exit(1);
-// }
-
-// try {
-//     const code = fs.readFileSync(inputFilePath, 'utf8');
-//     const obfuscatedCode = obfuscateCode(code, { rename: true, encode: true, flatten: true });
-//     fs.writeFileSync(outputFilePath, obfuscatedCode, 'utf8');
-//     console.log(`Obfuscated code saved to ${outputFilePath}`);
-// } catch (err) {
-//     console.error(`Error: ${err.message}`);
-//     process.exit(1);
-// }
-
-
-const fs = require('fs');
-const crypto = require('crypto');
-
-/**
- * Generate a random alphanumeric name.
- * @param {number} length Length of the name.
- * @returns {string} Random name.
- */
-function randomName(length = 8) {
-    return crypto.randomBytes(length).toString('hex').slice(0, length);
-}
-
-/**
- * Rename variables in JavaScript code.
- * @param {string} code JavaScript code.
- * @returns {string} Obfuscated code.
- */
-function renameVariables(code) {
-    const variableNames = [...code.matchAll(/\b(?:var|let|const)\s+(\w+)/g)].map(match => match[1]);
-    const mapping = {};
-
-    variableNames.forEach(varName => {
-        if (!mapping[varName]) {
-            mapping[varName] = randomName();
-        }
-    });
-
-    Object.entries(mapping).forEach(([oldName, newName]) => {
-        const regex = new RegExp(`\\b${oldName}\\b`, 'g');
-        code = code.replace(regex, newName);
-    });
-
-    return code;
-}
-
-/**
- * Encode string literals as hexadecimal.
- * @param {string} code JavaScript code.
- * @returns {string} Obfuscated code.
- */
-function encodeStrings(code) {
-    return code.replace(/(["'`])([^"'`]+?)\1/g, (match, quote, str) => {
-        const encoded = Buffer.from(str, 'utf8').toString('hex');
-        return `${quote}${encoded}${quote}`;
-    });
-}
-
-/**
- * Flatten JavaScript code by removing line breaks and extra spaces.
- * @param {string} code JavaScript code.
- * @returns {string} Flattened code.
- */
-function flattenCode(code) {
-    return code.split(/\r?\n/).map(line => line.trim()).filter(Boolean).join('; ') + ';';
-}
-
-/**
- * Add anti-debugging measures to the code.
- * @param {string} code JavaScript code.
- * @returns {string} Code with anti-debugging added.
- */
-function antiDebugger(code) {
-    const antiDebuggerCode = `
-        // Anti-debugging: Check for breakpoints or debugging tools
-        if (typeof navigator !== 'undefined' && /Chrome|Firefox/.test(navigator.userAgent)) {
-            const start = Date.now();
-            while (Date.now() - start < 1000) {
-                if (window.document.location.href.indexOf("debugger") !== -1) {
-                    alert("Debugger detected!");
-                    throw new Error("Debugger detected!");
-                }
-            }
-        }
-        
-        // Simple timing-based check (slows execution during debugging)
-        let startTime = new Date();
-        debugger;
-        if (new Date() - startTime < 100) {
-            throw new Error("Debugger detected!");
-        }
-    `;
-
-    return code + antiDebuggerCode;
-}
-
-/**
- * Main obfuscation function.
- * @param {string} code JavaScript code.
- * @param {Object} options Obfuscation options.
- * @returns {string} Obfuscated code.
- */
-function obfuscateCode(code, options = { rename: true, encode: true, flatten: true, antiDebugger: true }) {
-    if (options.rename) {
-        code = renameVariables(code);
+    for (let i = 0; i < dataBuffer.length; i++) {
+        encrypted[i] = dataBuffer[i] ^ keyBuffer[i % keyBuffer.length];
     }
-    if (options.encode) {
-        code = encodeStrings(code);
-    }
-    if (options.flatten) {
-        code = flattenCode(code);
-    }
-    if (options.antiDebugger) {
-        code = antiDebugger(code);
-    }
-    return code;
+    return encrypted;
 }
 
-// Usage
-const inputFilePath = process.argv[2];
-const outputFilePath = process.argv[3];
+// XOR Decryption Function (same as encryption)
+function xorDecrypt(data, key) {
+    return xorEncrypt(data, key);
+}
 
-if (!inputFilePath || !outputFilePath) {
-    console.error('Usage: node obfuscator.js <input-file> <output-file>');
+// Function to derive a key from the password
+function deriveKey(password) {
+    return crypto.createHash("sha256").update(password).digest().slice(0, 12); // 12-byte key
+}
+
+// Function to obfuscate JavaScript code
+function obfuscateJavaScript(code, password) {
+    let key = deriveKey(password);
+
+    // First obfuscation: Compress, Encrypt, Base64 Encode
+    let compressed = zlib.deflateSync(Buffer.from(code, "utf-8"));
+    let encrypted = xorEncrypt(compressed, key);
+    let encoded = Buffer.from(encrypted).toString("base64");
+
+    // Second obfuscation: Encrypt again with XOR
+    let secondEncrypted = xorEncrypt(Buffer.from(encoded, "utf-8"), key);
+    let finalEncoded = Buffer.from(secondEncrypted).toString("base64");
+
+    // Return obfuscated JavaScript code that can decrypt itself
+    return `
+const crypto = require("crypto");
+const zlib = require("zlib");
+
+function xorDecrypt(data, key) {
+    let keyBuffer = Buffer.from(key);
+    let decrypted = Buffer.alloc(data.length);
+    for (let i = 0; i < data.length; i++) {
+        decrypted[i] = data[i] ^ keyBuffer[i % keyBuffer.length];
+    }
+    return decrypted;
+}
+
+function deriveKey(password) {
+    return crypto.createHash("sha256").update(password).digest().slice(0, 12);
+}
+
+function executeObfuscatedCode(password) {
+    let encoded = "${finalEncoded}";
+    let data = Buffer.from(encoded, "base64");
+
+    let key = deriveKey(password);
+    let decryptedSecondLayer = xorDecrypt(data, key);
+    let decodedFirstLayer = Buffer.from(decryptedSecondLayer).toString("utf-8");
+    let decryptedFirstLayer = xorDecrypt(Buffer.from(decodedFirstLayer, "base64"), key);
+    
+    let decompressed = zlib.inflateSync(decryptedFirstLayer).toString("utf-8");
+    eval(decompressed);
+}
+
+const password = require("readline-sync").question("Enter password to decrypt the code: ", { hideEchoBack: true });
+executeObfuscatedCode(password);
+`;
+}
+
+// Read input file, obfuscate, and write to output file
+const inputFile = process.argv[2];
+const outputFile = process.argv[3];
+const password = process.argv[4];
+
+if (!inputFile || !outputFile || !password) {
+    console.error("Usage: node javascript_ob.js <inputFile> <outputFile> <password>");
     process.exit(1);
 }
 
-try {
-    const code = fs.readFileSync(inputFilePath, 'utf8');
-    const obfuscatedCode = obfuscateCode(code, { rename: true, encode: true, flatten: true, antiDebugger: true });
-    fs.writeFileSync(outputFilePath, obfuscatedCode, 'utf8');
-    console.log(`Obfuscated code saved to ${outputFilePath}`);
-} catch (err) {
-    console.error(`Error: ${err.message}`);
-    process.exit(1);
-}
+fs.readFile(inputFile, "utf8", (err, data) => {
+    if (err) {
+        console.error("Error reading file:", err);
+        return;
+    }
+
+    let obfuscatedCode = obfuscateJavaScript(data, password);
+
+    fs.writeFile(outputFile, obfuscatedCode, (err) => {
+        if (err) {
+            console.error("Error writing file:", err);
+            return;
+        }
+    });
+});
