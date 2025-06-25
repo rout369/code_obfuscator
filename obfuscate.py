@@ -468,7 +468,7 @@ def obfuscate(input_file, output_file, password):
         obfuscated_file_path = input(Fore.RED + "\n[::] 📂" + Fore.CYAN + "Please enter the Obfuscated full file path again: ")  # Replace with the actual file path of obfuscated code
         show_ai_results_from_files(original_file_path, obfuscated_file_path)
 
-# The main flow controller
+# The main flow controller and the handle the ai system
     
 
 if __name__ == "__main__":
