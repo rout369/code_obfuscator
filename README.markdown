@@ -43,11 +43,8 @@ To use this tool, ensure you have the following installed:
    git clone <repository-url>
    cd code-obfuscator
    ```
-2. Install the required Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-   *Note*: Create a `requirements.txt` file with `click` and `colorama` if not already present.
+2. Please Read the Requirement.txt file its not for install it have the instruction to follow
+   
 3. Ensure Node.js is installed for JavaScript obfuscation:
    ```bash
    node --version
@@ -61,7 +58,7 @@ To use this tool, ensure you have the following installed:
 ## Usage
 Run the CLI tool using the following command:
 ```bash
-python obfuscate.py --input_file <input_file> --output_file <output_file> [--password <password>]
+python obfuscate.py --input_file <input_file> --output_file <output_file> [--password <password>] // when using python to obfuscate else use instead of the flag password
 ```
 
 ### Options
@@ -85,7 +82,7 @@ After obfuscation, the tool prompts for the original and obfuscated file paths t
 ## Notes
 - **C and C++ Limitations**: These languages only support basic obfuscation (variable renaming, comment removal). Object-oriented programming (OOP) obfuscation is not supported.
 - **Rust Limitations**: Currently under implementation, with limited support for advanced features like macros or trait implementations.
-- **AI Integration**: The AI analysis feature (currently commented out) requires a Hugging Face API key and a compatible model (e.g., `bigcode/starcoder`). Uncomment and configure the API key in the code to enable this feature.
+- **AI Integration**: The AI analysis feature requires a Hugging Face API key and a compatible model (e.g., `bigcode/starcoder`). Uncomment and configure the API key in the code to enable this feature.
 - **GUI Features**: The AI results are displayed in a Tkinter window with a moving bar graph animation and a glowing text effect for better user experience.
 
 ## Directory Structure
@@ -106,9 +103,8 @@ code-obfuscator/
 
 ## AI Analysis
 The tool includes an AI-powered feature to compare the original and obfuscated code, ensuring functional equivalence. To enable this:
-1. Uncomment the Hugging Face API code in `obfuscate.py`.
-2. Set your Hugging Face API key in the `API_KEY` variable.
-3. Ensure internet connectivity for API requests.
+1. Set your Hugging Face API key in the `API_KEY` variable.
+2. Ensure internet connectivity for API requests.
 
 The AI results are displayed in a Tkinter GUI with:
 - Original and obfuscated code side-by-side.
@@ -122,16 +118,5 @@ The AI results are displayed in a Tkinter GUI with:
 - Add batch processing for multiple files.
 - Support additional languages like Java and PHP.
 
-## Contributing
-Contributions are welcome! Please:
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/new-feature`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
-4. Push to the branch (`git push origin feature/new-feature`).
-5. Open a pull request.
-
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Contact
-For issues or suggestions, contact Vishal (Bloodhowl) via email or open an issue on the repository.
